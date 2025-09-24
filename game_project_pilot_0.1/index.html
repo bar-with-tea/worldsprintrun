@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Sprint</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    .runner {
+      position: relative;
+      top: 20px;
+      width: 64px;
+      height: 64px;
+      margin-left: 15px;
+      transform: translateX(-50%) translateY(0%);
+      font-size: 32px;
+      transition: left 0.1s linear;
+      border: 0px;
+      z-index: 10;
+    }
+    .hurdle {
+      position: absolute;
+      font-size: 24px;
+      top: 20px;
+      transform: translateX(-50%);
+      z-index: 5;
+    }
+    .relative {
+      min-height: 100px;
+      position: relative;
+      overflow: visible;
+    }
+    .glow {
+      box-shadow: 0 0 10px 4px #3b82f6, 0 0 20px 8px #3b82f6;
+      animation: glowPulse 1s infinite alternate;
+    }
+    @keyframes glowPulse {
+      from {
+        box-shadow: 0 0 6px 2px #3b82f6;
+      }
+      to {
+        box-shadow: 0 0 20px 8px #3b82f6;
+      }
+    }
+    @keyframes bounce-slow {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+.animate-bounce-slow {
+  animation: bounce-slow 2s infinite;
+}
+
+    .runner img,
+    .hurdle img {
+      transform: none !important;
+      max-width: none;
+      max-height: none;
+      object-fit: contain;
+      will-change: auto;
+    }
+    .clock-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+    }
+    .clock-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .clock-time {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      font-weight: normal;
+      font-family: 'Share Tech Mono', monospace;
+      color: darkgreen;
+    }
+    #speedContainer {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+    }
+    #speedDisplay {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #2563eb;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      font-weight: normal;
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+  <div class="w-full max-w-md">
+    <h1 class="text-3xl text-white text-center mb-6 w-full py-5 rounded-xl font-extrabold tracking-wide shadow-xl border-4 border-blue-500 bg-gradient-to-r from-blue-600 via-blue-400 to-green-400 animate-bounce-slow"
+      style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: 'Share Tech Mono', monospace;">
+      🌍 World Sprint Run
+    </h1>
+
+    <div class="mb-4 text-sm" id="countrySelectSection">
+  <label for="country" class="block text-gray-700 font-semibold mb-1 tracking-wide">🌐 Select Your Country</label>
+  <select id="country"
+          class="w-full px-3 py-2 text-sm rounded-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition duration-150 ease-in-out hover:border-blue-400">
+  </select>
+</div>
+
+
+    <div id="selectedCountry" class="flex items-center justify-center mb-4 space-x-2 text-xl"></div>
+
+    <div class="text-center mt-6 mb-6">
+      <button id="startBtn" class="glow bg-blue-600 text-white font-bold px-6 py-3 rounded-full shadow-md hover:bg-blue-700 active:scale-95 transition transform duration-200">
+        🏁 Start Running!
+      </button>
+    </div>
+
+    <div id="game" class="hidden mt-6 text-center">
+      <p class="mb-2">Alternate press <strong>W</strong> and <strong>S</strong> quickly to run! Press <strong>B</strong> to control breath!</p>
+      <div class="flex items-center justify-between mb-4 w-full">
+        <div class="w-[100px]">
+          <div class="clock-container">
+            <img src="pictures/clock.png" alt="Clock">
+            <div id="time" class="clock-time">00:00</div>
+          </div>
+        </div>
+
+        <div class="flex-1 flex flex-col items-center">
+          <div id="speedContainer" style="background-image: url('pictures/speedometer_v_1_1.png');">
+            <span id="speedDisplay">0.00 m/s</span>
+          </div>
+        </div>
+
+        <div class="w-[100px] flex flex-col items-center justify-center mr-4">
+          <div style="position: relative; width: 80px; height: 16px; border: 1px solid #9ca3af; border-radius: 9999px; background-color: #d1d5db; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; height: 100%; width: 30%; background-color: #ef4444;"></div>
+            <div style="position: absolute; top: 0; left: 30%; height: 100%; width: 40%; background-color: #22c55e;"></div>
+            <div style="position: absolute; top: 0; left: 70%; height: 100%; width: 30%; background-color: #ef4444;"></div>
+            <div class="breathing-bar-marker" style="position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background-color: blue; z-index: 20; transform: translateX(-50%);"></div>
+            <div id="breathingBar" style="height: 100%; width: 0%; transition: width 0.2s ease; position: relative; z-index: 10;"></div>
+          </div>
+          <span class="text-xs mt-1 font-mono text-gray-700" id="breathingLabel">Breath</span>
+        </div>
+      </div>
+
+      <div class="w-full overflow-hidden">
+        <div class="relative w-[120%] h-5 mt-4 bg-no-repeat bg-cover bg-center rounded-md border-4 border-blue-600" style="background-image: url('pictures/track_v1_2.png');">
+          <div id="runner" class="runner" style="left: 20%">
+            <img id="runnerImg" src="pictures/runner_v1_1.png" alt="Runner" width="64" height="64">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 mb-12">
+      <h2 class="text-xl font-semibold mb-2">🏆 Leaderboard</h2>
+      <ul id="leaderboard" class="space-y-1 text-sm"></ul>
+    </div>
+  </div>
+
+  <script src="variables.js"></script>
+  <script defer src="script.js"></script>
+  <audio id="bgMusic" src="music/game_song_1.wav" loop preload="auto"></audio>
+</body>
+</html>
