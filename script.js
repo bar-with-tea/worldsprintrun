@@ -161,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bgMusic.currentTime = 0;
   }
 
-  // 🧭 Countdown Function
   function startCountdown(callback) {
     let count = 3;
     countdownOverlay.style.display = 'flex';
@@ -227,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
     marker.style.left = '50%';
     breathingBar.style.width = '0%';
 
-    // 🧭 Begin countdown before actual running starts
     running = false;
     startCountdown(() => {
       running = true;
@@ -243,9 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const elapsed = now - startTime;
           const seconds = Math.floor(elapsed / 1000);
           const hundredths = Math.floor((elapsed % 1000) / 10);
-          document.getElementById('time').textContent = `${seconds
-            .toString()
-            .padStart(2, '0')}:${hundredths.toString().padStart(2, '0')}`;
+          document.getElementById('time').textContent =
+            `${seconds.toString().padStart(2, '0')}:${hundredths.toString().padStart(2, '0')}`;
         }
       }, 50);
     });
@@ -287,7 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
         stopRunnerAnimation();
         const timeTaken = (endTime - startTime) / 1000;
         document.getElementById('time').textContent = timeTaken.toFixed(2);
-        scores.push({ country: countryInput.value.trim(), time: timeTaken });
+        scores.push({
+          country: countryInput.value.trim(),
+          time: timeTaken
+        });
         updateLeaderboard();
         startBtn.classList.add('glow');
       }
@@ -299,5 +299,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lastKey = e.key;
     lastPressTime = now;
+  });
+
+});
+
+/* 📱 MOBILE BUTTON SUPPORT: ADDED SAFELY AT END */
+document.querySelectorAll('#mobileControls button').forEach(btn => {
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const key = btn.getAttribute('data-key');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: key }));
   });
 });
